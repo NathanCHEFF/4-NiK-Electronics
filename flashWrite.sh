@@ -47,7 +47,7 @@ if [ "$RESP" != "y" ] && [ "$RESP" != "Y" ] && [ "$RESP" != "д" ] && [ "$RESP" 
 
 fi
 
-if [! -f $VFILE ] ; then
+if [ ! -f $VFILE ] ; then
 	echo "неправильная директория или нет файла"
 	exit
 fi
@@ -62,8 +62,9 @@ else
 	#sudo mkfs -t ext4 -L FLASH /dev/sdb
 fi
 #sudo dd if=/home/smart/Downloads/libzavod-sd-image-master-1845.img of=/dev/sdb status=progress
-sudo dd if=$VFILE of=/dev/sdb  
-#sudo dd if=$VFILE of=/dev/sdb  | echo '\r\n' sudo kill -USR1 $(pgrep ^dd)
+#sudo dd if=$VFILE of=/dev/sdb  
+sudo dd if=$VFILE of=/dev/sdb  status=progress
+#sudo dd if=$VFILE of=/dev/sdb  | echo  $(sudo kill -USR1 $(pgrep ^dd))
 #sudo dd if=/home/smart/Downloads/libzavod-sd-image-master-1845.img of=/dev/sdb | watch -n1 'sudo kill -USR1 $(pgrep ^dd)'
 clear
 sudo sync
@@ -77,7 +78,7 @@ echo 'Создание файла interfaces'
 #
 #
 UUID=$(blkid -s UUID -o value /dev/sdb1)
-VFILE=/media/smart/"$UUID"/interface
+VFILE=/media/smart/"$UUID"/interfaces
 
 if [ ! -f $VFILE ] ; then
 	echo  "файла нет!"
@@ -95,37 +96,40 @@ fi
 #
 
 echo "Ведите номер места(или КС)"
-read RESP
-IPADR=$(( RESP + 59 ))
-MACADR=$(echo "obase=16; "$(( RESP + 212 )) | bc)
+read RESPI
+IPADR=$(( RESPI + 59 ))
+MACADR= MACADR=$(echo $(echo "obase=16; "$(( RESP + 212 )) | bc)| tr '[:upper:]' '[:lower:]')
 echo "Ip адрес устройства  10.3.33."$IPADR
 echo "Mac адрес устройства b6:d0:5e:0f:"$MACADR":16"
 echo ""
 echo "Запись данных"
-
-echo '# INTERFACES ###############################'"\r" > $VFILE
-echo '# USE_BRANCH master ########################'"\r" >> $VFILE
-echo ''"\r" >> $VFILE
-echo '# '$RESP' mountplace'"\r" >> $VFILE
-echo ''"\r" >> $VFILE
-echo 'auto lo'"\r" >> $VFILE
-echo 'iface lo inet loopback'"\r" >> $VFILE
-echo ''"\r" >> $VFILE
-echo '#auto eth1'"\r" >> $VFILE
-echo 'allow-hotplug eth1'"\r" >> $VFILE
-echo 'iface eth1 inet static'"\r" >> $VFILE
-echo "\t"'hwaddress ether 02:fb:85:37:a5:fa'"\r" >> $VFILE
-echo "\t"'address 10.2.33.240'"\r" >> $VFILE
-echo "\t"'netmask 255.255.255.0'"\r" >> $VFILE
-echo "\t"'metric 2'"\r" >> $VFILE
-echo ''"\r" >> $VFILE
-echo '#auto eth0'"\r" >> $VFILE
-echo 'allow-hotplug eth0'"\r" >> $VFILE
-echo 'iface eth0 inet static'"\r" >> $VFILE
-echo "\t"'hwaddress ether b6:d0:5e:0f:'$MACADR':16'"\r" >> $VFILE
-echo "\t"'address 10.3.33.'$IPADR"\r" >> $VFILE
-echo "\t"'netmask 255.255.255.0'"\r" >> $VFILE
-echo "\t"'gateway 10.3.33.250'"\r" >> $VFILE
-echo "\t"'metric 3' >> $VFILE
+echo '# INTERFACES ###############################'$'\r' > $VFILE
+echo '# USE_BRANCH master ########################'$'\r' >> $VFILE
+echo ''$'\r' >> $VFILE
+echo '# '$RESPI' mountplace'$'\r' >> $VFILE
+echo ''$'\r' >> $VFILE
+echo 'auto lo'$'\r' >> $VFILE
+echo 'iface lo inet loopback'$'\r' >> $VFILE
+echo ''$'\r' >> $VFILE
+echo '#auto eth1'$'\r' >> $VFILE
+echo 'allow-hotplug eth1'$'\r' >> $VFILE
+echo 'iface eth1 inet static'$'\r' >> $VFILE
+echo $'\t''hwaddress ether 02:fb:85:37:a5:fa'$'\r' >> $VFILE
+echo $'\t''address 10.2.33.240'$'\r' >> $VFILE
+echo $'\t''netmask 255.255.255.0'$'\r' >> $VFILE
+echo $'\t''metric 2'$'\r' >> $VFILE
+echo ''$'\r' >> $VFILE
+echo '#auto eth0'$'\r' >> $VFILE
+echo 'allow-hotplug eth0'$'\r' >> $VFILE
+echo 'iface eth0 inet static'$'\r' >> $VFILE
+echo $'\t''hwaddress ether b6:d0:5e:0f:'$MACADR':16'$'\r' >> $VFILE
+echo $'\t''address 10.3.33.'$IPADR$'\r' >> $VFILE
+echo $'\t''netmask 255.255.255.0'$'\r' >> $VFILE
+echo $'\t''gateway 10.3.33.250'$'\r' >> $VFILE
+echo $'\t''metric 3'$'\r' >> $VFILE
 echo ""
+sudo sync
+echo 'синхронизация...'
+echo "Синхронизация прошла с кодом "$RANDOM
 echo "$(cat $VFILE)"
+read -t 5 -p "Окно зароеться через 5 секунд"
