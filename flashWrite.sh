@@ -32,12 +32,12 @@
 #
 VFILE=/home/smart/Downloads/libzavod-sd-image-master-1845.img
 echo 'Запуск программы записи флешки'
-echo ''
+#echo ''
 echo 'https://github.com/NathanCHEFF/flashWriter-4-NiK-Electronics-/'
-echo 'У меня работало без форматирования и отмонтирования устройства.'
-echo 'Просто вводи "n"'
-echo ''
-echo ''
+#echo 'У меня работало без форматирования и отмонтирования устройства.'
+#echo 'Просто вводи "n"'
+#echo ''
+#echo ''
 echo ''
 echo 'путь к файлу образа '$VFILE' ?'
 read RESP
