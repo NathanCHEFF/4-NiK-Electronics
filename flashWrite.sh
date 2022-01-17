@@ -58,12 +58,22 @@ if [ "$RESP" != "y" ] && [ "$RESP" != "Y" ] && [ "$RESP" != "д" ] && [ "$RESP" 
 	echo  "форматирование отменено!"
 else
 	echo 'Размонтируем'
-	#sudo umount /dev/sdb
-	#sudo mkfs -t ext4 -L FLASH /dev/sdb
+	sudo umount /dev/sdb
+	sudo mkfs -t ext4 -L FLASH /dev/sdb
+  echo "Если окно закроеться - программу нужно доработать!"
 fi
-#sudo dd if=/home/smart/Downloads/libzavod-sd-image-master-1845.img of=/dev/sdb status=progress
+echo 'Записать данные на носитель?(Y/n)?'
+read RESP
+if [ "$RESP" != "y" ] && [ "$RESP" != "Y" ] && [ "$RESP" != "д" ] && [ "$RESP" != "Д" ] ; then
+  echo "Запись отменена."
+else
+  clear
+  echo  "Write partition data:"
+  sudo dd if=/home/smart/Downloads/libzavod-sd-image-master-1845.img of=/dev/sdb status=progress
+fi
+
 #sudo dd if=$VFILE of=/dev/sdb  
-sudo dd if=$VFILE of=/dev/sdb  status=progress
+#sudo dd if=$VFILE of=/dev/sdb  status=progress
 #sudo dd if=$VFILE of=/dev/sdb  | echo  $(sudo kill -USR1 $(pgrep ^dd))
 #sudo dd if=/home/smart/Downloads/libzavod-sd-image-master-1845.img of=/dev/sdb | watch -n1 'sudo kill -USR1 $(pgrep ^dd)'
 clear
@@ -77,9 +87,9 @@ echo 'Создание файла interfaces'
 #
 #
 #
-UUID=$(blkid -s UUID -o value /dev/sdb1)
+UUID=$(sudo blkid -s UUID -o value /dev/sdb1)
 VFILE=/media/smart/"$UUID"/interfaces
-
+echo " метка тома : "$UUID
 if [ ! -f $VFILE ] ; then
 	echo  "файла нет!"
 	sudo cat > $VFILE
@@ -103,6 +113,7 @@ echo "Ip адрес устройства  10.3.33."$IPADR
 echo "Mac адрес устройства b6:d0:5e:0f:"$MACADR":16"
 echo ""
 echo "Запись данных"
+sudo mount -o remount,rw /media/smart/"$UUID"/
 echo '# INTERFACES ###############################'$'\r' > $VFILE
 echo '# USE_BRANCH master ########################'$'\r' >> $VFILE
 echo ''$'\r' >> $VFILE
@@ -132,4 +143,4 @@ sudo sync
 echo 'синхронизация...'
 echo "Синхронизация прошла с кодом "$RANDOM
 echo "$(cat $VFILE)"
-read -t 5 -p "Окно зароеться через 5 секунд"
+read -t 8 -p "Окно зароется через 7 секунд"
