@@ -32,12 +32,12 @@
 #
 VFILE=/home/smart/Downloads/libzavod-sd-image-master-1845.img
 echo 'Запуск программы записи флешки'
-#echo ''
+echo ''
 echo 'https://github.com/NathanCHEFF/flashWriter-4-NiK-Electronics-/'
-#echo 'У меня работало без форматирования и отмонтирования устройства.'
-#echo 'Просто вводи "n"'
-#echo ''
-#echo ''
+echo 'У меня работало без форматирования и отмонтирования устройства.'
+echo 'Просто вводи "n"'
+echo ''
+echo ''
 echo ''
 echo 'путь к файлу образа '$VFILE' ?'
 read RESP
@@ -107,8 +107,15 @@ fi
 
 echo "Ведите номер места(или КС)"
 read RESPI
+
 IPADR=$(( RESPI + 59 ))
-MACADR= MACADR=$(echo $(echo "obase=16; "$(( RESP + 212 )) | bc)| tr '[:upper:]' '[:lower:]')
+
+CONST_ADD=212
+if [ $RESPI -ge 27 ]
+  CONST_ADD = $((CONST_ADD + 1))
+fi
+
+MACADR= MACADR=$(echo $(echo "obase=16; "$(( RESPI + CONST_ADD )) | bc)| tr '[:upper:]' '[:lower:]')
 echo "Ip адрес устройства  10.3.33."$IPADR
 echo "Mac адрес устройства b6:d0:5e:0f:"$MACADR":16"
 echo ""
@@ -143,4 +150,4 @@ sudo sync
 echo 'синхронизация...'
 echo "Синхронизация прошла с кодом "$RANDOM
 echo "$(cat $VFILE)"
-read -t 8 -p "Окно зароется через 7 секунд"
+read -t 8 -p "Окно зароеться через 7 секунд"
